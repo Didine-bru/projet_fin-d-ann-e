@@ -1,0 +1,630 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="icon" type="image/png" href="images/logo.jpg">
+
+  <title>
+    Enregistrement des étudiants
+  </title>
+  <!--jquery-->
+  <script src="/js/jquery-3.7.1.min.js"></script>
+  <!-- bootstrap-->
+  <link rel="stylesheet" href="/css/bootstrap.min.css">
+  <!--font-awesome-->
+  <link rel="stylesheet" href="/fontawesome 5.15.4/css/all.min.css">
+  <!--DataTables plugins-->
+  <link rel="stylesheet" href="/css/bootstrap.css">
+  <script src="/js/jquery.dataTables.min.js"></script>
+  <!-- toast css-->
+  <link rel="stylesheet" href="/css/jquery.toast.css">
+  <script src="/js/jquery.toast.min.js" rel="stylesheet"></script>
+  <!--sweet alert-->
+  <link rel="stylesheet" href="/css/sweetalert.css">
+  <script src="/js/sweetalert.min.js" rel="stylesheet"></script>
+  <style>
+    .error {
+      color: rgb(219, 39, 93);
+      font-weight: 700;
+      display: block;
+      padding: 6px 0;
+      font-size: 14px;
+
+    }
+
+    .form-control.error {
+      border-color: rgb(219, 39, 93);
+      padding: .375rem .75;
+    }
+  </style>
+</head>
+
+<body>
+
+  
+
+  <!-- <button id="generatePdfButton">Generate PDF</button> -->
+
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-md-4 jumbotron ml-3">
+        <h4 class="mt-1 mb-3">Cliquer pour ajouter</h4>
+        <!--main btn init-->
+        <div id="main_btn">
+          <button onclick="show_add_form()" class="btn btn-success btn-sm">Ajout Etudiants</button>
+        </div>
+        <!--main btn end-->
+
+        <!--==============================================================-->
+        <!--Section form init-->
+        <div id="main_form">
+          <form id="insert_form" role="form" autocomplete="off">
+            <div class="mb-2 mt-2">
+              <input type="hidden" id="txt_for" name="txt_for">
+              <input type="hidden" id="txt_for_id" name="txt_for_id">
+              <input type="text" id="txt_full_name" name="txt_full_name" class="form-control" 
+                placeholder="Nom(s)">
+            </div>
+            <div class="form-floating mb-2 mt-2">
+              <input type="text" id="txt_last_name" name="txt_last_name" class="form-control" placeholder="Prenom(s)">
+            </div>
+            <div class="form-floating mb-2 mt-2">
+              <input type="date" id="dates_nais" name="dates_nais" class="form-control"
+                placeholder="Dates de naisssances">
+                
+            </div>
+            <div class=" mb-2 mt-2">
+              <input type="text" id="sexeEt" name="sexeEt" class="form-control" list="genre" placeholder="Genre">
+              <datalist id="genre">
+                <option value="Male">
+                <option value="Femelle">
+              </datalist>
+            </div>
+            <div class="form-floating mb-2 mt-2">
+              <input type="text" id="txt_email" name="txt_email" class="form-control" placeholder="@example.com">
+            </div>
+            <div class="form-floating mb-2 mt-2">
+              <input type="number" id="numero_mat" name="numero_mat" class="form-control"
+                placeholder="Numeros Matricules">
+            </div>
+            <div class=" mb-2 mt-2">
+              <input type="text" id="niveauEt" name="niveauEt" class="form-control" list="niveau" placeholder="Niveau">
+              <datalist id="niveau">
+                <option value="L1">
+                <option value="L2">
+                <option value="L3">
+                <option value="M1">
+                <option value="M2">
+              </datalist>
+            </div>
+            <div class="form-floating mb-3 mt-3">
+              <input type="text" id="parcoursEt" name="parcoursEt" class="form-control" list="parcours" placeholder="Parcours">
+              <datalist id="parcours">
+                <option value="IG">
+                <option value="GB">
+                <option value="SR">
+              </datalist>
+            </div>
+            <div id="submit_div" class="form-floating mb-2 mt-2">
+              <button type="submit" class="btn btn-success">Envoyer</button>
+              
+            </div>
+          </form>
+        </div>
+        <!--Section form end-->
+        <!--==============================================================-->
+      </div>
+      <!--tableau de donnee-->
+
+      <div class="form-floating col-md-7">
+        <h4>Donnees Etudiants </h4>
+        <div class="table-responsive m-t-40">
+          <table id="exampleTable" class="" cellspacing="0" width="100%">
+
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!--Jquery validation plugins-->
+  <script src="/js/jquery.validate.min.js"></script>
+  <script src="/js/jquery.validate.unobtrusive.min.js"></script>
+
+  <!--Section Javascript-->
+  <script>
+    function show_add_form() {
+      $('#main_form').show();
+      $('#txt_for').val('INSERT');
+
+      let content = '';
+      content += '<button type="button" onclick="hide_form()" class="btn btn-sm btn-success">Ajout Etudiants</button>';
+      content += '<br>';
+
+      $('#main_btn').html(content);
+    }
+    function show_edit_form() {
+      $('#main_form').show();
+      $('#txt_for').val('EDIT');
+
+      let content = '';
+      content += '<button type="button" onclick="hide_form()" class="btn btn-sm btn-secondary">Hide form</button>';
+      content += '<br>';
+
+      $('main_btn').html(content);
+
+      let content1 = '';
+      content1 += '<button type="button" class="btn btn-sm btn-secondary">edit data</button>';
+      content1 += '<br>';
+
+      $('submit_div').html(content1);
+    }
+    function hide_form() {
+      $('#main_form').hide();
+
+      $('#txt_full_name').val('');
+      $('#txt_last_name').val('');
+      $('#dates_nais').val('');
+      $('#sexeEt').val('');
+      $('#txt_email').val('');
+      $('#numero_mat').val('');
+      $('#niveauEt').val('');
+      $('#parcoursEt').val('');
+
+      let content = '';
+      content += '<button type="button" onclick="show_add_form()" class="btn btn-sm btn-success">Ajout Etudiants</button>';
+      content += '<br>';
+
+      $('#main_btn').html(content);
+    }
+
+    //init data Table
+    let dt = $('#exampleTable').DataTable({
+      "order": [
+        [0, "desc"]
+      ],
+      "processing": true,
+      "serverSide": true,
+      "initComplete": function (settings, json) {
+        $('#exampleTable').show();
+      },
+      "select": true,
+      "bFilter": false,
+      "bInfo": false,
+      "bPaginate": false,
+      "columns": [
+
+        // {
+        //   "data": 'id_user',
+        //   "name": 'id_user',
+        //   'title': 'ID'
+        // },
+        {
+          "data": 'fullname',
+          "name": 'fullname',
+          'title': 'Nom'
+        },
+        {
+          "data": 'lastname',
+          "name": 'lastname',
+          'title': 'Prenom(s)'
+        },
+        {
+          "data": 'datenais',
+          "name": 'datenais',
+          'title': 'Datenais'
+        },
+        {
+          "data": 'sexe',
+          "name": 'sexe',
+          'title': 'Sexe'
+        },
+        {
+          "data": 'email',
+          "name": 'email',
+          'title': 'Email'
+        },
+        {
+          "data": 'numeroMat',
+          "name": 'numeroMat',
+          'title': 'Num_Mat'
+        },
+        {
+          "data": 'niveau',
+          "name": 'niveau',
+          'title': 'Niveau'
+        },
+        {
+          "data": 'parcours',
+          "name": 'parcours',
+          'title': 'Parcours'
+        },
+        {
+          "data": 'isactive',
+          "name": 'isactive',
+          'title': 'Statuts',
+          mRender: function (data) {
+            if (data == '1') {
+              return '<span class="badge badge-success">Passant</span>'
+            } if (data == '0') {
+              return '<span class="badge badge-dark">Redoublant</span>'
+            }
+          }
+        },
+        // {
+        //   "data": 'insert_date',
+        //   "name": 'insert_date',
+        //   'title': 'Cree_le'
+        // },
+        {
+          "data": 'id_user',
+          'title': 'Action',
+          mRender: function (data) {
+            return '<button type="button" data-toggle="tooltip" title="Modifier" onclick="getDataEtudiant(\'' + data + '\');" class="btn text-success"><i class="fa fa-edit"></i></button>' +
+              '<button id="editid" type="button" data-toggle="tooltip" title="Supprimer" type="button" onclick="deleteData(\'' + data + '\');" class="btn text-danger"><i class="fa fa-trash"></i></button>'
+          }
+        }
+
+      ],
+      "language": {
+        "emptyTable": "Aucun donnée à voir!"
+      },
+      "ajax":
+      {
+        "type": 'get',
+        "url": '/getDataEtudiant',
+        //"content": 'application/json; charset=utf-8',
+        "dataType": 'json',
+        "dataSrc": ""
+      },
+    });
+    //ajax pour recuperer les donnes du table
+    function getDataEtudiant(id) {
+      $.ajax({
+        url: '/getData/' + id,
+        data: { id: id },
+        method: "POST",
+        dataType: "json",
+        success: function (result) {
+          console.log(result);
+          show_edit_form();
+
+          if (result.data && result.data.length > 0) {
+            $('#txt_for_id').val(result.data[0].id_user);
+            $('#txt_full_name').val(result.data[0].fullname);
+            $('#txt_last_name').val(result.data[0].lastname);
+            $('#dates_nais').val(result.data[0].datenais);
+            $('#sexeEt').val(result.data[0].sexe);
+            $('#txt_email').val(result.data[0].email);
+            $('#numero_mat').val(result.data[0].numeroMat);
+            $('#niveauEt').val(result.data[0].niveau);
+            $('#parcoursEt').val(result.data[0].parcours);
+          } else {
+            console.error("No data found for ID: " + id);
+          }
+        },
+        error: function (error) {
+          console.error("Erreur lors du chargement des donnees: " + error);
+          dt.ajax.reload();
+          dt.raw();
+        }
+      });
+    }
+
+
+    function deleteData(id_user) {
+      swal({
+        title: "Êtes-vous sûr?",
+        text: "Cette action est irrèversible !",
+        showCancelButton: true,
+        confirmButtonColor: "#fcb03b",
+        confirmButtonText: "Oui, supprimer ",
+        cancelButtonText: "Non, merci",
+        closeOnConfirm: false,
+        closeOnCancel: true
+      }, function (isConfirm) {
+        if (isConfirm) {
+          $.ajax({
+            type: 'DELETE', // Utilisation de la méthode DELETE
+            url: '/deleteData/' + id_user, // Inclure l'ID dans l'URL
+            dataType: 'json',
+            success: function (result) {
+              dt.ajax.reload();
+              dt.draw();
+              if (result.status === 200) {
+                swal("Supprimé !", "La ligne sélectionnée a été supprimée.", "success");
+                $.toast({
+                  heading: 'Succès',
+                  text: result.message,
+                  position: 'top-right',
+                  loaderBg: '#effff8',
+                  icon: 'success',
+                  hideAfter: 3500
+                });
+              } else if (result.status === 500) {
+                swal("Échec !", "Erreur interne du serveur.", "error");
+                $.toast({
+                  heading: 'Erreur',
+                  text: result.message,
+                  position: 'top-right',
+                  loaderBg: '#effff8',
+                  icon: 'error',
+                  hideAfter: 3500
+                });
+              }
+            },
+            error: function (error) {
+              dt.ajax.reload();
+              dt.draw();
+              swal("Échec !", "Échec lors de la suppression", 'error');
+            }
+          });
+        }
+      });
+    }
+
+
+  </script>
+  <script>
+    $(document).ready(function () {
+      $('#main_form').hide();
+
+      $('#txt_full_name').val('');
+      $('#txt_last_name').val('');
+      $('#dates_nais').val('');
+      $('#sexeEt').val('');
+      $('#txt_email').val('');
+      $('#numero_mat').val('');
+      $('#niveauEt').val('');
+      $('#parcoursEt').val('');
+
+      //form validation
+      $("#insert_form").validate({
+        ignore: [],
+        rules: {
+          txt_full_name: {
+            required: true
+          },
+          txt_last_name: {
+            required: true
+          },
+          dates_nais: {
+            required: true
+          },
+          sexeEt: {
+            required: true
+          },
+          txt_email: {
+            required: true,
+            email: true
+          },
+          numero_mat: {
+            required: true,
+            minlength: 5,
+            maxlength: 5,
+            number: true
+          },
+          niveauEt: {
+            required: true
+          },
+          parcoursEt: {
+            required: true
+          }
+        },
+        messages: {
+          txt_full_name: 'Veuillez remplir le champs  Nom Etudiants!',
+          txt_last_name: 'Veuillez remplir le champs Prenom Etudiants!',
+          dates_nais: 'Veuillez entrer la date de naissance!',
+          sexeEt: 'Veuillez choisir le sexe ',
+          txt_email: {
+            required: 'Le champ email est obigatoire!',
+            email: 'Entrer une email valide!'
+          },
+          numero_mat: {
+            required: 'Veuillez entrer Numero Matricules Etudiants',
+            number: 'Saisissez uniquement des chiffres!',
+            minlength: 'Moins de 5 chiffres',
+            maxlength: 'Moins de 5 chiffres'
+          },
+          niveauEt: 'Niveau Etudiants!',
+          parcoursEt: 'Choisissez parcours!'
+
+        },
+        submitHandler: function (form) {
+          //form submit
+          let formData = new FormData(form);
+          //insert form
+          if ($('#txt_for').val() === 'INSERT') {
+            $.ajax({
+              url: '/saveFormData',
+              data: $('#insert_form').serializeArray(),
+              dataType: 'json',
+              method: 'POST',
+              processData: true,
+              error: function (error) {
+                dt.ajax.reload();
+                dt.draw();
+                console.log(error);
+                $.toast({
+                  heading: 'Error',
+                  text: 'Erreur serveur interne!',
+                  position: 'top-right',
+                  loaderBg: '#effff8',
+                  icon: 'error',
+                  hideAfter: 3500
+                });
+              },
+              success: function (results) {
+                dt.ajax.reload();
+                dt.draw();
+                if (results.status == 200) {
+                  $.toast({
+                    heading: 'Success',
+                    text: results.message,
+                    position: 'top-right',
+                    loaderBg: '#effff8',
+                    icon: 'success',
+                    hideAfter: 3500
+                  });
+                }
+                if (results.status == 500) {
+                  $.toast({
+                    heading: 'Error',
+                    text: results.message,
+                    position: 'top-right',
+                    loaderBg: '#effff8',
+                    icon: 'error',
+                    hideAfter: 3500
+                  });
+                }
+                hide_form()
+                $('#txt_full_name').val('');
+                $('#txt_last_name').val('');
+                $('#dates_nais').val('');
+                $('#sexeEt').val('');
+                $('#txt_email').val('');
+                $('#numero_mat').val('');
+                $('#niveauEt').val('');
+                $('#parcoursEt').val('');
+              }
+            });
+          }
+          //end form
+          //update ajax form
+          if ($('#txt_for').val() === 'EDIT') {
+            $.ajax({
+              url: 'updateData/' + $('#txt_for_id').val(),
+              data: {
+                id: $('#txt_for_id').val(),
+                fullname: $('#txt_full_name').val(),
+                lastname: $('#txt_last_name').val(),
+                datenais: $('#dates_nais').val(),
+                sexe: $('#sexeEt').val(),
+                email: $('#txt_email').val(),
+                numeroMat: $('#numero_mat').val(),
+                niveau: $('#niveauEt').val(),
+                parcours: $('#parcoursEt').val()
+              },
+              dataType: "json",
+              method: "PUT",
+              processData: true,
+              success: function (result) {
+                dt.ajax.reload();
+                dt.draw();
+                if (result.status == 200) {
+                  $.toast({
+                    heading: 'updated',
+                    text: result.message,
+                    position: 'top-right',
+                    loaderBg: '#effff8',
+                    icon: 'info',
+                    hideAfter: 3500
+                  });
+                }
+                if (result.status == 500) {
+                  $.toast({
+                    heading: 'Error',
+                    text: result.message,
+                    position: 'top-right',
+                    loaderBg: '#effff8',
+                    icon: 'error',
+                    hideAfter: 3500
+                  });
+                }
+                hide_form()
+                $('#txt_full_name').val('');
+                $('#txt_last_name').val('');
+                $('#dates_nais').val('');
+                $('#sexeEt').val('');
+                $('#txt_email').val('');
+                $('#numero_mat').val('');
+                $('#niveauEt').val('');
+                $('#parcoursEt').val('');
+              },
+              error: function (error) {
+                dt.ajax.reload();
+                dt.draw();
+                $.toast({
+                  heading: 'Error',
+                  text: 'Erreur serveur interne!',
+                  position: 'top-right',
+                  loaderBg: '#effff8',
+                  icon: 'error',
+                  hideAfter: 3500
+                });
+              }
+            });
+          }//end ajax update
+        }
+      });
+    });
+  </script>
+  <!--DataTables plugins in ajax-->
+  <link rel="stylesheet" href="/DataTables/css/jquery.dataTables.min.css">
+  <script src="/DataTables/js/jquery.dataTables.min.js"></script>
+  <script>
+    $(document).ready(function () {
+      var dt = $('#exampleTable').DataTable({
+        "ajax": {
+          "url": "/getDataEtudiant", // L'URL de votre route pour obtenir des données
+          "dataSrc": "" // Nom de la propriété contenant les données dans la réponse JSON
+        },
+        "columns": [
+          // { "data": "id_user" },
+          { "data": "fullname" },
+          { "data": "lastname" },
+          { "data": "datenais" },
+          { "data": "sexe" },
+          { "data": "email" },
+          { "data": "numeroMat" },
+          { "data": "niveau" },
+          { "data": "parcours" },
+          {
+            "data": 'isactive',
+            "name": 'isactive',
+            'title': 'Statuts',
+            mRender: function (data) {
+              if (data == '1') {
+                return '<span class="badge badge-success">Passant</span>'
+              } if (data == '0') {
+                return '<span class="badge badge-dark">Redoublant</span>'
+              }
+            }
+          },
+          // { "data": "insert_date" },
+          {
+            "data": 'id_user',
+            'title': 'Action',
+            mRender: function (data) {
+              return '<button type="button" data-toggle="tooltip" title="Modifier" onclick="getDataEtudiant(\'' + data + '\');" class="btn text-success"><i class="fa fa-edit"></i></button>' +
+                '<button id="editid" type="button" data-toggle="tooltip" title="Supprimer" type="button" onclick="deleteData(\'' + data + '\');" class="btn text-danger"><i class="fa fa-trash"></i></button>'
+            }
+          }
+          // Ajoutez d'autres colonnes ici
+        ],
+        "searching": true, // Activer la recherche
+        "paging": true, // Activer la pagination
+        "ordering": true, // Activer le tri
+        "language": {
+          "url": "/js/French.json"
+        }
+      });
+      $('#generatePdfButton').click(function () {
+      $.ajax({
+        url: '/pdf',
+        method: 'GET',
+        success: function (response) {
+          // Redirigez vers le fichier PDF généré
+          window.open('/pdf');
+        },
+        error: function (err) {
+          console.error('Erreur lors de la génération du PDF : ', err);
+        }
+      });
+    });
+    });
+    
+  </script>
+</body>
+</html>

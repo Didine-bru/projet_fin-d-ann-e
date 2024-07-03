@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <link rel="apple-touch-icon" sizes="76x76" href="../assets/img/apple-icon.png">
+  <link rel="icon" type="image/png" href="images/logo.jpg">
+  <title>Réinitialisation du mot de passe</title>
+  <!-- CSS Files -->
+  <link rel="stylesheet" href="/css/bootstrap.min.css">
+  <link rel="stylesheet" href="/fontawesome 5.15.4/css/all.min.css">
+  <link rel="stylesheet" href="/css/jquery.toast.css">
+  <link rel="stylesheet" href="/css/sweetalert.css">
+  <link href="/assets/css/argon-dashboard.css?v=2.0.4" rel="stylesheet" />
+</head>
+<body class="register-page" style="background-color: aquamarine;">
+  <div class="wrapper">
+    <section class="section section-shaped section-lg">
+      <div class="shape shape-style-1 bg-gradient-default">
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+      <div class="container pt-lg-7">
+        <div class="row justify-content-center">
+          <div class="col-lg-5">
+            <div class="card  shadow border-0">
+              <div class="card-header bg-white pb-5">
+                <div class="text-muted text-center mb-3"><h1><small>Réinitialisation</small></h1></div>
+              <div class="card-body px-lg-5 py-lg-5">
+                <div class="text-center text-muted mb-4">
+                  <img src="images/logo.jpg" width="50" height="50">
+                </div>
+                <form role="form"  id="resetPasswordForm" action="/mdp" method="post">
+                  <div class="form-group">
+                    <div class="input-group input-group-alternative mb-3">
+                        <span class="input-group-text"><i class="fa fa-user"></i></span>
+                      <input class="form-control" placeholder="Nom d'utilisateur"  name="username" id="username" type="text">
+                     
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <div class="input-group input-group-alternative mb-3">
+                        <span class="input-group-text"><i class="fa fa-key"></i></span>
+                      <input class="form-control" id="password" placeholder="password" type="password" name="password" required>
+                    </div>
+                  </div>
+                  <div class="form-group ">
+                    <div class="input-group input-group-alternative">
+                        <span class="input-group-text"><i class="fa fa-lock"></i></span>
+                      <input class="form-control" placeholder="confirm_password" type="password" name="confirmpassword" required  id="confirmpassword">
+                    </div>
+                  </div>
+                  <div class="text-center">
+                    <button type="submit" class="btn btn-primary mt-4">Réinitialiser le mot de passe</button>
+                  </div>
+                  <div class="text-center">
+                    <button type="button" class="btn btn-secondary mt-1" onclick="redirection()"><i class="fa fa fa-user "></i></a></button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script src="/js/jquery-3.7.1.min.js"></script>
+  <script src="/js/jquery.toast.min.js"></script>
+  <script src="/js/sweetalert.min.js"></script>
+  <script>
+    $(document).ready(function() {
+      $('#resetPasswordForm').submit(function(e) {
+        e.preventDefault();
+        var username = $('#username').val();  // Ajout de cette ligne pour récupérer le nom d'utilisateur
+        var password = $('#password').val();
+        var confirmpassword = $('#confirmpassword').val();
+        if (password !== confirmpassword) {
+          $.toast({
+            heading: 'Erreur',
+            text: 'Les mots de passe ne correspondent pas',
+            icon: 'error',
+            position: 'top-right'
+          });
+          return;
+        }
+        $.ajax({
+          url: '/mdp',
+          method: 'POST',
+          data: {
+            username: username,  // Ajout de cette ligne pour envoyer le nom d'utilisateur
+            password: password
+          },
+          success: function(response) {
+            $.toast({
+              heading: 'Succès',
+              text: response.message,
+              icon: 'success',
+              position: 'top-right'
+            });
+          },
+          error: function(xhr, status, error) {
+            var errorMessage = JSON.parse(xhr.responseText).message;
+            $.toast({
+              heading: 'Erreur',
+              text: errorMessage,
+              icon: 'error',
+              position: 'top-right'
+            });
+          }
+        });
+      });
+    });
+    
+  </script>
+  <script>
+    function redirection(){
+      window.location.href="/";
+    }
+  </script>
+  <script src="/assets/js/core/popper.min.js" type="text/javascript"></script>
+  <script src="/assets/js/core/bootstrap.min.js" type="text/javascript"></script>
+</body>
+</html>
